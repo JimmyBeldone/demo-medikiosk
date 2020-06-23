@@ -23,12 +23,16 @@ const Layout = ({ children }) => {
       }
     }
   `)
-  useEffect(() => {
+  const fullscreen = () => {
+    console.log("fullscreen")
+    console.log("TCL: fullscreen -> screenfull.isEnabled", screenfull.isEnabled)
     if (typeof window !== "undefined" && screenfull.isEnabled) {
       const getFullScreenNode = () => document.documentElement || document.body
       screenfull.toggle(getFullScreenNode())
+    } else {
+      console.log("no no no")
     }
-  }, [])
+  }
 
   return (
     <>
@@ -36,6 +40,9 @@ const Layout = ({ children }) => {
       <div>
         <main>{children}</main>
       </div>
+      <button className="fullscreen" onClick={fullscreen}>
+        Fullscreen
+      </button>
     </>
   )
 }
