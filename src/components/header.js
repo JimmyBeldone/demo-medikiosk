@@ -1,35 +1,70 @@
-import { Link } from "gatsby"
+import { useStaticQuery, graphql } from "gatsby"
 import PropTypes from "prop-types"
+// import Img from "gatsby-image"
 import React from "react"
 
-const Header = ({ siteTitle }) => (
-  <header
-    style={{
-      background: `rebeccapurple`,
-      marginBottom: `1.45rem`,
-    }}
-  >
-    <div
+const Header = ({ siteTitle }) => {
+  const data = useStaticQuery(graphql`
+    query {
+      header: file(relativePath: { eq: "header.png" }) {
+        childImageSharp {
+          fluid(maxWidth: 2000) {
+            ...GatsbyImageSharpFluid
+          }
+        }
+      }
+    }
+  `)
+
+  return (
+    <header
       style={{
-        margin: `0 auto`,
-        maxWidth: 960,
-        padding: `1.45rem 1.0875rem`,
+        width: "100%",
+        height: "auto",
+        paddingBottom: `${
+          100 / data.header.childImageSharp.fluid.aspectRatio
+        }%`,
+        position: "relative",
       }}
     >
-      <h1 style={{ margin: 0 }}>
-        <Link
-          to="/"
-          style={{
-            color: `white`,
-            textDecoration: `none`,
-          }}
-        >
-          {siteTitle}
-        </Link>
-      </h1>
-    </div>
-  </header>
-)
+      <img
+        src={data.header.childImageSharp.fluid.src}
+        style={{
+          position: "absolute",
+          maxWidth: "100%",
+          height: "100%",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          // background: `rebeccapurple`,
+          // backgroundImage: `url(${data.header.childImageSharp.fluid.src})`,
+          // backgroundRepeat: "no-repeat",
+          // backgroundSize: "cover",
+
+          // padding: `1.45rem 1.0875rem`,
+        }}
+      />
+      {/* <div
+        style={{
+          position: "absolute",
+          maxWidth: "100%",
+          height: "100%",
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: `rebeccapurple`,
+          backgroundImage: `url(${data.header.childImageSharp.fluid.src})`,
+          backgroundRepeat: "no-repeat",
+          // backgroundSize: "cover",
+
+          // padding: `1.45rem 1.0875rem`,
+        }}
+      ></div> */}
+    </header>
+  )
+}
 
 Header.propTypes = {
   siteTitle: PropTypes.string,
