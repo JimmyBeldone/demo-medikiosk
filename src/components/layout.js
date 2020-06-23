@@ -5,9 +5,10 @@
  * See: https://www.gatsbyjs.org/docs/use-static-query/
  */
 
-import React from "react"
+import React, { useEffect } from "react"
 import PropTypes from "prop-types"
 import { useStaticQuery, graphql } from "gatsby"
+import screenfull from "screenfull"
 
 import Header from "./header"
 import "./layout.css"
@@ -22,6 +23,12 @@ const Layout = ({ children }) => {
       }
     }
   `)
+  useEffect(() => {
+    if (typeof window !== "undefined" && screenfull.isEnabled) {
+      const getFullScreenNode = () => document.documentElement || document.body
+      screenfull.toggle(getFullScreenNode())
+    }
+  }, [])
 
   return (
     <>
