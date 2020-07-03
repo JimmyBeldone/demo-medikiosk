@@ -10,21 +10,14 @@ import List from "../components/List"
 const IndexPage = () => {
   // Download and store an image
   async function downloadAndStoreImage(url) {
-    // const res = await fetch(url, { mode: "no-cors" })
+    const res = await fetch(`https://cors-anywhere.herokuapp.com/${url}`)
     // console.log("downloadAndStoreImage -> res", res)
-    // const blob = await res.blob()
+    const blob = await res.blob()
     // console.log("downloadAndStoreImage -> blob", blob)
-    // return blob
+    return blob
   }
 
   async function store(data) {
-    // await db.myData.bulkAdd({
-    //   albumId: item.albumId,
-    //   // id: item.id,
-    //   // thumbnailUrl: await downloadAndStoreImage(item.thumbnailUrl),
-    //   title: item.title,
-    //   // url: await downloadAndStoreImage(item.url),
-    // })
     await db.myData
       .bulkAdd(data)
       .then(lastKey => {
@@ -43,23 +36,28 @@ const IndexPage = () => {
       })
   }
 
+  async function test(data) {
+    const res = data.map(async item => ({
+      albumId: item.albumId,
+      id: item.id,
+      // thumbnailUrl: await downloadAndStoreImage(item.thumbnailUrl),
+      title: item.title,
+      url: await downloadAndStoreImage(item.url),
+    }))
+
+    Promise.all(res).then(async completed => {
+      console.log("test -> completed", completed)
+      await store(completed)
+    })
+  }
+
   useEffect(() => {
     const photos = fetch("https://jsonplaceholder.typicode.com/photos")
       .then(response => response.json())
       .then(async json => {
         console.log(json)
+        // const a = await test(json)
         await store(json)
-        // const dataWithBlob = []
-        // json.map(async item => {
-        //   dataWithBlob.push({
-        //     albumId: item.albumId,
-        //     id: item.id,
-        //     thumbnailUrl: await downloadAndStoreImage(item.thumbnailUrl),
-        //     title: item.title,
-        //     url: await downloadAndStoreImage(item.url),
-        //   })
-        // })
-        // console.log(dataWithBlob)
       })
   }, [])
 
